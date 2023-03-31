@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { RecentMatchLoading } from "../components/loading/LoadingRecentMatches"
 import { Loading } from "../components/loading/SpinningLoader"
-import { LeaderboardLoading } from "@/components"
+import { LeaderboardLoading } from "@/components/loading/LoadingLeaderboard"
 
 export interface ILeaderboard {
   IsAnonymized: boolean

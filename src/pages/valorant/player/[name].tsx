@@ -69,7 +69,6 @@ export default function RecentMatches({ data }: { data: Data }) {
     const game_length = agent.metadata.game_length
     const game_start = agent.metadata.game_start_patched
     const team = foundPlayer?.team === "Blue" || "Red" ? "Blue" : "Red"
-    // console.log(foundPlayer?.team === "Blue" || "Red")
 
     return foundPlayer
       ? {
@@ -88,8 +87,6 @@ export default function RecentMatches({ data }: { data: Data }) {
   })
 
   console.log(data.data)
-  // console.log("recent:", recentMatches)
-  // console.log(isReady)
 
   return (
     <div className="text-white">

@@ -32,8 +32,8 @@ export default function Posts() {
   useEffect(() => {
     const handleScroll = () => {
       if (
-        window.innerHeight + document.documentElement.scrollTop ===
-        document.documentElement.offsetHeight
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 50 // Add a threshold, e.g., 50 pixels
       ) {
         setEndReached(true)
         setTimeout(() => {
@@ -42,12 +42,12 @@ export default function Posts() {
         }, 1500)
       }
     }
+
     window.addEventListener("scroll", handleScroll)
     return () => {
       window.removeEventListener("scroll", handleScroll)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [displayedItems])
+  }, [displayedItems, loadMore])
 
   const searchPosts = debounce(async (query: string) => {
     if (query) {
@@ -67,6 +67,7 @@ export default function Posts() {
     searchPosts(e.target.value)
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function loadMore() {
     const currentLength = displayedItems.length
     const newItems = data.slice(currentLength, currentLength + 5)
@@ -90,7 +91,7 @@ export default function Posts() {
         {displayedItems.map((item, index) => (
           <div
             key={index}
-            className="bg-gray-700 rounded-lg p-4 mb-4 shadow-md transition ease-in-out hover:-translate-y-1 hover:shadow-lg"
+            className="bg-gray-700 rounded-lg p-4 mb-6 shadow-md transition ease-in-out hover:-translate-y-1 hover:shadow-lg"
           >
             <Link href={`/posts/${item.id}`} legacyBehavior>
               <a>
