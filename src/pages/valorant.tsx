@@ -6,11 +6,6 @@ import { RecentMatchLoading } from "../components/loading/LoadingRecentMatches"
 import { Loading } from "../components/loading/SpinningLoader"
 import { LeaderboardLoading } from "@/components"
 
-interface Props {
-  players: ILeaderboard[]
-  region: string
-  isLoading: boolean
-}
 export interface ILeaderboard {
   IsAnonymized: boolean
   IsBanned: boolean
@@ -42,11 +37,11 @@ const loadRegionFromLocalStorage = (): string => {
   }
   return "latam"
 }
-export default function Leaderboard({ players }: Props) {
+export default function Leaderboard() {
   const [data, setData] = useState<ILeaderboardData>()
   const [itemsToShow, setItemsToShow] = useState(1000)
   const [loading, setLoading] = useState(false)
-  // const [region, setRegion] = useState("latam")
+
   const [initialLoading, setInitialLoading] = useState(false)
   const [fetchingData, setFetchingData] = useState(true)
 
@@ -177,8 +172,8 @@ export default function Leaderboard({ players }: Props) {
               {data &&
                 data.players &&
                 data.players
+                  .slice(0, itemsToShow) // apply slice before filtering
                   .filter((player) => player.gameName)
-                  .slice(0, itemsToShow)
                   .map((player, index) => (
                     <Link
                       key={index}

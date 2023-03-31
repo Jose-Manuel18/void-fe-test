@@ -1,7 +1,21 @@
 import Image from "next/image"
+// interfaces.ts
+export interface PlayerProps {
+  character: string
+  map: string
+  game_length: number
+  game_start: string
+  team: string
+  playerTeamWon: boolean
+  AgentImage: string
+  kills: number
+  deaths: number
+  assists: number
+}
 
 export function RecentMatch(props: any) {
   const gameLengthInMinutes = Math.floor(props.game_length / 60000)
+  console.log("props:", props)
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8">
