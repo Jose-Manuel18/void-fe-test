@@ -1,6 +1,6 @@
 import Image from "next/image"
 // interfaces.ts
-export interface PlayerProps {
+export interface RecentMatchProps {
   character: string
   map: string
   game_length: number
@@ -13,7 +13,7 @@ export interface PlayerProps {
   assists: number
 }
 
-export function RecentMatch(props: any) {
+export function RecentMatch(props: RecentMatchProps) {
   const gameLengthInMinutes = Math.floor(props.game_length / 60000)
   console.log("props:", props)
 

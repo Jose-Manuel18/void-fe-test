@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { RecentMatch } from "@/components/RecentMatch"
+import { RecentMatch, RecentMatchProps } from "@/components/RecentMatch"
 
 import { GetStaticPaths, GetStaticProps } from "next"
 export interface ILeaderboard {
@@ -37,19 +37,29 @@ export interface MetadataProps {
 }
 
 export interface PlayerProps {
-  character: string
-  puuid: string
-  team: "Blue" | "Red"
-  assets: {
-    agent: {
-      small: string
-    }
+  game_start: string | number | Date
+  assists: number
+  deaths: number
+  kills: number
+  playerTeamWon: boolean
+  map: string
+  AgentImage: string
+  game_length: number
+  character?: string
+  puuid?: string
+  team?: string
+  assets?: AssestsProps
+  stats?: StatsProps
+}
+interface AssestsProps {
+  agent: {
+    small: string
   }
-  stats: {
-    kills: number
-    deaths: number
-    assists: number
-  }
+}
+interface StatsProps {
+  kills: number
+  deaths: number
+  assists: number
 }
 interface Data {
   data: RecentMatchesProps[]
@@ -78,10 +88,10 @@ export default function RecentMatches({ data }: { data: Data }) {
           game_start: game_start,
           team: team,
           playerTeamWon: playerTeamWon,
-          AgentImage: foundPlayer.assets.agent.small,
-          kills: foundPlayer.stats.kills,
-          deaths: foundPlayer.stats.deaths,
-          assists: foundPlayer.stats.assists,
+          AgentImage: foundPlayer.assets?.agent.small,
+          kills: foundPlayer.stats?.kills,
+          deaths: foundPlayer.stats?.deaths,
+          assists: foundPlayer.stats?.assists,
         }
       : null
   })
@@ -93,7 +103,7 @@ export default function RecentMatches({ data }: { data: Data }) {
       <h1 className="text-4xl font-bold text-center mb-8">Recent Matches</h1>
 
       {recentMatches.map((item, index) => {
-        return <RecentMatch key={index} {...item} />
+        return <RecentMatch key={index} {...(item as RecentMatchProps)} />
       })}
     </div>
   )
