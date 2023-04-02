@@ -96,8 +96,6 @@ export default function RecentMatches({ data }: { data: Data }) {
       : null
   })
 
-  console.log(data.data)
-
   return (
     <div className="text-white">
       <h1 className="text-4xl font-bold text-center mb-8">Recent Matches</h1>
@@ -114,7 +112,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   )
   const data: ILeaderboardData = await result.json()
   const paths = data?.players?.map((player: ILeaderboard) => ({
-    params: { name: `${player.gameName}#${player.tagLine}-latam` }, // add the region as part of the name parameter
+    params: {
+      name: `${encodeURIComponent(player.gameName)}#${encodeURIComponent(
+        player.tagLine,
+      )}-latam`,
+    },
   }))
   return {
     paths,
@@ -124,29 +126,27 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { name } = params ?? {}
-  const [gameName, tagLine, region] = (name as string).split(/#|-/) // split the name string using both '#' and '-' as separators
-
+  const [gameName, tagLine, region] = (name as string).split(/#|-/)
   try {
-    console.time("API request")
     const result = await fetch(
-      `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${gameName}/${tagLine}`,
+      `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${encodeURIComponent(
+        gameName,
+      )}/${encodeURIComponent(tagLine)}`,
     )
-    console.timeEnd("API request")
     if (!result.ok) {
       throw new Error(
         `Error fetching data from API: ${result.status} ${result.statusText}`,
       )
     }
-
     const data: ILeaderboardData = await result.json()
     return {
       props: {
         data,
       },
+      revalidate: 10,
     }
   } catch (error) {
     console.error(error)
-
     return {
       notFound: true,
     }

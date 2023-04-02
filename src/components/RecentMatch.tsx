@@ -15,7 +15,6 @@ export interface RecentMatchProps {
 
 export function RecentMatch(props: RecentMatchProps) {
   const gameLengthInMinutes = Math.floor(props.game_length / 60000)
-  console.log("props:", props)
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8">
@@ -29,6 +28,7 @@ export function RecentMatch(props: RecentMatchProps) {
                 className="w-12 h-12 rounded-full mr-4"
                 width={50}
                 height={50}
+                loading="lazy"
               />
               <div>
                 <div className="text-white font-semibold text-2xl">

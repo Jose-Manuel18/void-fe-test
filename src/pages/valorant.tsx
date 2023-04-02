@@ -178,8 +178,13 @@ export default function Leaderboard() {
                     <Link
                       key={index}
                       href={{
-                        pathname: `/valorant/player/${player.gameName}#${player.tagLine}-${region}`,
-                        query: { puuid: player.puuid },
+                        pathname: `/valorant/player/${encodeURIComponent(
+                          player.gameName,
+                        )}#${encodeURIComponent(player.tagLine)}-${region}`,
+
+                        query: {
+                          puuid: player.puuid,
+                        },
                       }}
                     >
                       <li
@@ -217,7 +222,7 @@ export default function Leaderboard() {
             </ul>
           </>
         )}
-        {loading && <Loading />}
+        {loading && !initialLoading && <Loading />}
       </div>
     </>
   )

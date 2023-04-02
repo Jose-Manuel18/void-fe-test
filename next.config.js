@@ -25,11 +25,14 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/valorant',
+        source: "/",
+        destination: "/valorant",
         permanent: true,
       },
     ]
+  },
+  experimental: {
+    largePageDataBytes: 128 * 100000,
   },
 }
 

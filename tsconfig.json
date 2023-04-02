@@ -16,7 +16,7 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
-
+    "removeComments": true,
     "noImplicitAny": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
