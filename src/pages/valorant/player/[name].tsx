@@ -107,20 +107,27 @@ export default function RecentMatches({ data }: { data: Data }) {
   )
 }
 export const getStaticPaths: GetStaticPaths = async () => {
-  const result = await fetch(
-    `https://api.henrikdev.xyz/valorant/v2/leaderboard/latam`,
-  )
-  const data: ILeaderboardData = await result.json()
-  const paths = data?.players?.map((player: ILeaderboard) => ({
-    params: {
-      name: `${encodeURIComponent(player.gameName)}#${encodeURIComponent(
-        player.tagLine,
-      )}-latam`,
-    },
-  }))
+  const regions = ["na", "eu", "ap", "kr", "latam"]
+  const paths = []
+
+  for (const region of regions) {
+    const result = await fetch(
+      `https://api.henrikdev.xyz/valorant/v2/leaderboard/${region}`,
+    )
+    const data: ILeaderboardData = await result.json()
+    const regionPaths = data?.players?.map((player: ILeaderboard) => ({
+      params: {
+        name: `${encodeURIComponent(player.gameName)}#${encodeURIComponent(
+          player.tagLine,
+        )}-${region}`,
+      },
+    }))
+    paths.push(...regionPaths)
+  }
+
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   }
 }
 
