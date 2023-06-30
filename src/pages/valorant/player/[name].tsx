@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import { RecentMatch, RecentMatchProps } from "@/components/RecentMatch"
 
-import { GetStaticPaths, GetStaticProps } from "next"
+import { GetServerSideProps } from "next"
 export interface ILeaderboard {
   IsAnonymized: boolean
   IsBanned: boolean
@@ -106,39 +106,14 @@ export default function RecentMatches({ data }: { data: Data }) {
     </div>
   )
 }
-export const getStaticPaths: GetStaticPaths = async () => {
-  const regions = ["na", "eu", "ap", "kr", "latam"]
-  const paths = []
-
-  for (const region of regions) {
-    const result = await fetch(
-      `https://api.henrikdev.xyz/valorant/v2/leaderboard/${region}`,
-    )
-    const data: ILeaderboardData = await result.json()
-    const regionPaths = data?.players?.map((player: ILeaderboard) => ({
-      params: {
-        name: `${encodeURIComponent(player.gameName)}#${encodeURIComponent(
-          player.tagLine,
-        )}-${region}`,
-      },
-    }))
-    paths.push(...regionPaths)
-  }
-
-  return {
-    paths,
-    fallback: true,
-  }
-}
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { name } = params ?? {}
   const [gameName, tagLine, region] = (name as string).split(/#|-/)
   try {
     const result = await fetch(
       `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${encodeURIComponent(
-        gameName,
-      )}/${encodeURIComponent(tagLine)}`,
+        decodeURIComponent(gameName),
+      )}/${encodeURIComponent(decodeURIComponent(tagLine))}`,
     )
     if (!result.ok) {
       throw new Error(
@@ -150,7 +125,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       props: {
         data,
       },
-      revalidate: 10,
     }
   } catch (error) {
     console.error(error)
@@ -159,3 +133,56 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
   }
 }
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const regions = ["na", "eu", "ap", "kr", "latam"]
+//   const paths = []
+
+//   for (const region of regions) {
+//     const result = await fetch(
+//       `https://api.henrikdev.xyz/valorant/v2/leaderboard/${region}`,
+//     )
+//     const data: ILeaderboardData = await result.json()
+//     const regionPaths = data?.players?.map((player: ILeaderboard) => ({
+//       params: {
+//         name: `${encodeURIComponent(player.gameName)}#${encodeURIComponent(
+//           player.tagLine,
+//         )}-${region}`,
+//       },
+//     }))
+//     paths.push(...regionPaths)
+//   }
+
+//   return {
+//     paths,
+//     fallback: true,
+//   }
+// }
+
+// export const getStaticProps: GetStaticProps = async ({ params }) => {
+//   const { name } = params ?? {}
+//   const [gameName, tagLine, region] = (name as string).split(/#|-/)
+//   try {
+//     const result = await fetch(
+//       `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${encodeURIComponent(
+//         decodeURIComponent(gameName),
+//       )}/${encodeURIComponent(decodeURIComponent(tagLine))}`,
+//     )
+//     if (!result.ok) {
+//       throw new Error(
+//         `Error fetching data from API: ${result.status} ${result.statusText}`,
+//       )
+//     }
+//     const data: ILeaderboardData = await result.json()
+//     return {
+//       props: {
+//         data,
+//       },
+//       revalidate: 10,
+//     }
+//   } catch (error) {
+//     console.error(error)
+//     return {
+//       notFound: true,
+//     }
+//   }
+// }

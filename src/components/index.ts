@@ -1,4 +1,3 @@
-export { Leaderboard } from "../pages/valorant"
 export { LeaderboardLoading } from "./loading/LoadingLeaderboard"
 export { RecentMatchLoading } from "./loading/LoadingRecentMatches"
 export { Loading } from "./loading/SpinningLoader"

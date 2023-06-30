@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps } from "next"
+import { GetServerSideProps } from "next"
 
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -50,23 +50,30 @@ export default function FullPost({ post }: { post: Post }) {
     </div>
   )
 }
-export const getStaticPaths: GetStaticPaths = async () => {
-  // Fetch post IDs from API
-  const response = await fetch(
-    `https://6396aee2a68e43e41808fa18.mockapi.io/api/posts`,
-  )
-  const posts: Post[] = await response.json()
-  const paths = posts.map((post) => ({
-    params: { id: post.id },
-  }))
-  return { paths, fallback: false }
-}
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // Fetch post data based on ID
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const response = await fetch(
+//     `https://6396aee2a68e43e41808fa18.mockapi.io/api/posts`,
+//   )
+//   const posts: Post[] = await response.json()
+//   const paths = posts.map((post) => ({
+//     params: { id: post.id },
+//   }))
+//   return { paths, fallback: false }
+// }
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { id } = params ?? {}
-  const response = await fetch(
-    `https://6396aee2a68e43e41808fa18.mockapi.io/api/posts/${id}`,
-  )
-  const post: Post = await response.json()
-  return { props: { post } }
+  try {
+    const response = await fetch(
+      `https://6396aee2a68e43e41808fa18.mockapi.io/api/posts/${id}`,
+    )
+    if (!response.ok) {
+      console.error("Response error", response.status, response.statusText)
+      throw new Error("API response was not ok")
+    }
+    const post: Post = await response.json()
+    return { props: { post } }
+  } catch (error) {
+    console.error("Fetch error", error)
+    return { props: {} }
+  }
 }
